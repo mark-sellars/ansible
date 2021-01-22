@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+     - name: Send Shutdown message
+       win_msg:
+         display_seconds: 280
+         msg: "Automatic shutdown is about to start in 5 minutes. Please save your work and log off."
+
+     - name: Shutdown windows 5 min
+       win_shell: shutdown -s -t 300

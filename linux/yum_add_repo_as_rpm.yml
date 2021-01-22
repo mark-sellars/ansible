@@ -1,0 +1,7 @@
+- name: add yum repository via rpm -ivh command. Must be run as sudo
+  hosts: all
+  gather_facts: False
+  tasks:
+     - command: rpm -ivh "{{rpm_url}}"
+
+

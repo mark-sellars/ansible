@@ -1,0 +1,9 @@
+- name: Open a firewalld port
+  hosts: all
+  gather_facts: False
+  tasks:
+  - firewalld:
+      port: "{{port_number}}/{{port_type}}"
+      permanent: true
+      state: enabled
+      immediate: yes

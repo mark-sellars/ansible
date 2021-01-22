@@ -1,0 +1,11 @@
+- name: Update all yum packages including kernel
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Update all packages including kernel
+      yum:
+        name: '*'
+        state: latest
+      register: yumoutput
+    - debug:
+        msg: "{{ yumoutput.results | map(attribute='Package') | list }}"

@@ -1,0 +1,11 @@
+- name: Install from yum
+  hosts: all
+  gather_facts: False
+  tasks:
+
+    - name: Reboot machine
+      command: "/sbin/reboot"
+
+    - name: Wait for the machine to finish rebooting
+      sudo: no
+      local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=300

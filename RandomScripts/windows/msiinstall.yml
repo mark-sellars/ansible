@@ -1,0 +1,49 @@
+- name: Run MSI Installs
+  hosts: windows
+  gather_facts: false
+  tasks:
+    - name: Run Putty Install
+      win_msi:
+        path: C:\Scripts\putty.msi
+        state: present
+        wait: true
+    - name: Run Google Chrome Install
+      win_msi:
+        path: C:\Scripts\chrome.msi
+        state: present
+        wait: true
+    - name: Tortoise SVN
+      win_msi:
+        path: C:\Scripts\Tortoise-1.9.5.27.msi
+        state: present
+        wait: true
+    - name: Foxit Reader
+      win_msi:
+        path: C:\Scripts\FoxitReader83enuSetup.msi
+        state: present
+        wait: true
+    - name: 7zip
+      win_msi:
+        path: C:\Scripts\7z1700-x64.msi
+        state: present
+        wait: true
+    - name: VLC
+      win_package:
+        path: C:\Scripts\vlc-2.2.exe
+        product_id: 'VLC media player'
+        arguments: /S
+        state: present
+        wait: true
+    - name: WinSCP
+      win_package:
+        path: C:\Scripts\WinSCP-5.9.5-Setup.exe
+        product_id: 'winscp3_is1'
+        arguments: /SP /VERYSILENT /NORESTART
+        state: present
+        wait: true
+
+
+
+
+
+            

@@ -1,0 +1,8 @@
+- name: Create Scripts Folder
+  hosts: MANAGEMENT
+  gather_facts: false
+  tasks:
+    - name: hi
+      win_file: 
+        path: C:\Scripts
+        state: directory                   

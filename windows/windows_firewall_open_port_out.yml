@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+     - name: Open Firewall rule out
+       win_firewall_rule:
+          name: "{{ firewall_rule_out_name }} AWX Out"
+          localport: "{{ firewall_out_port }}"
+          action: "{{ firewall_out_action }}"
+          direction: out
+          protocol: "{{ firewall_out_protocol }}"
+          state: present
+          enabled: yes
+       become_method: runas

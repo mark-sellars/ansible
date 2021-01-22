@@ -1,0 +1,8 @@
+---
+- name: Remove Strawberry Perl
+  hosts: all
+  tasks:
+   - name: remove package
+     win_chocolatey:
+       name: strawberryperl
+       state: absent

@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: True
+  tasks:
+     - name: Install C4B and Repos
+       win_shell: |
+         $downloader = New-Object -TypeName System.Net.WebClient
+         Invoke-Expression ($downloader.DownloadString('https://choco.example.com:8443/repository/choco-install/ClientSetup.ps1'))
+
+         choco source remove -n=SMI
+
+         choco source add --name=Restricted --source=https://choco.example.com:8443/repository/Restricted/ --admin-only
+
+         choco sync

@@ -1,0 +1,10 @@
+- name: Run Batch Script
+  hosts: Management
+  gather_facts: false
+  tasks:
+    - name: Run Batch Script
+      win_shell: netsh wlan add profile filename="\\ATVM\scripts\WirelessNetworkConnectionSMI2.xml" user=all
+      args:
+        executable: cmd
+#      wait:true
+#      script: /etc/ansible/library/batchrem.bat

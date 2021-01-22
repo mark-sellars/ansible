@@ -1,0 +1,21 @@
+---
+- hosts: all
+  gather_facts: True
+  tasks:
+     - name: Install Zabbix
+       win_shell: |
+         choco feature enable -n=useRememberedArgumentsForUpgrades
+
+         choco install zabbix-agent.install -params '"/INSTALLFOLDER:C:\Zabbix /LOGFILE:C:\zabbix_agentd.log /SERVER:10.0.0.102 /SERVERACTIVE:10.0.0.102"' -fy
+
+         C:\Zabbix\zabbix_agentd.exe --stop
+
+         ((Get-Content -path C:\Zabbix\zabbix_agentd.conf -Raw) -replace '# HostMetadataItem=','HostMetadataItem=system.uname') | Set-Content -Path C:\Zabbix\zabbix_agentd.conf
+
+         
+- name: Start Zabbix
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Start Zabbix
+       win_shell: C:\Zabbix\zabbix_agentd.exe --start

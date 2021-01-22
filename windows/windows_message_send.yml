@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+     - win_msg:
+        display_seconds: 300
+        msg: Automated upgrade about to start.  Please save your work.

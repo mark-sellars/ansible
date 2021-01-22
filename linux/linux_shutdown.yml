@@ -1,0 +1,6 @@
+- name: Shutdown linux hosts
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Shutdown machine
+      command: "/sbin/shutdown"

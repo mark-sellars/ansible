@@ -1,0 +1,13 @@
+- name: test raw module
+  hosts: windows
+  tasks:
+     - name: ltpowercad
+       win_copy:
+         src: /mnt/data/home/atheofilopoulos/ansible/powercad.exe
+         dest: c:\scripts
+     - name: ltpowercad2
+       win_copy:
+         src: /mnt/data/home/atheofilopoulos/ansible/NotForSetup.msi
+         dest: c:\scripts
+
+

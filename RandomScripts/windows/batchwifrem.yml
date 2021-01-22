@@ -1,0 +1,10 @@
+- name: Run Batch Script
+  hosts: Management
+  gather_facts: false
+  tasks:
+    - name: Run Batch Script
+      win_shell: netsh wlan delete profile name="SMI"
+      args:
+        executable: cmd
+#      wait:true
+#      script: /etc/ansible/library/batchrem.bat

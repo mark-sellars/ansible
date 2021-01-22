@@ -1,0 +1,5 @@
+- name: zabbix install work around
+  hosts: all
+  gather_facts: False
+  tasks:
+     - command: yum install -y "{{package_name}}"

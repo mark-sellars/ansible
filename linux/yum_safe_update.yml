@@ -1,0 +1,12 @@
+- name: Update all yum packages except kernel
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Safe update excluding kmod kernel nvidia virtualbox
+      yum:
+        name: '*'
+        state: latest
+        exclude: kmod*,kernel*,nvidia*,VirtualBox*, virtualbox*
+      register: yumoutput
+    - debug:
+        msg: "{{ yumoutput.results | map(attribute='Package') | list }}"

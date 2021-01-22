@@ -1,0 +1,9 @@
+- name: Install from yum
+  hosts: all
+  gather_facts: False
+  tasks:
+   - yum:
+       name: "{{ package_name }}"
+       state: "present"
+       update_cache: "yes"
+       disable_gpg_check: "yes"

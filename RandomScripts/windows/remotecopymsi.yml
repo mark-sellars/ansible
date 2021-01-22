@@ -1,0 +1,28 @@
+- name: Copy a single file
+  hosts: EE
+  gather_facts: false
+  tasks:
+    - name: Copying Putty
+      win_copy: 
+        src: /mnt/data/home/atheofilopoulos/ansible/putty.msi
+        dest: c:\Scripts\putty.msi
+    - name: Copying Chrome
+      win_copy:
+        src: /mnt/data/home/atheofilopoulos/ansible/chrome.msi
+        dest: c:\Scripts\chrome.msi
+    - name: Copying VLC
+      win_copy:
+        src: /mnt/data/home/atheofilopoulos/ansible/vlc-2.2.exe
+        dest: c:\Scripts\vlc-2.2.exe
+    - name: Copying Tortoise SVN
+      win_copy:
+        src: /mnt/data/home/atheofilopoulos/ansible/Tortoise-1.9.5.27.msi
+        dest: c:\Scripts\Tortoise-1.9.5.27.msi      
+    - name: 7zip
+      win_copy:
+        src: /mnt/data/home/atheofilopoulos/ansible/7z1700-x64.msi
+        dest: c:\Scripts\7z1700-x64.msi 
+    - name: WinSCP
+      win_copy:
+        src: /mnt/data/home/atheofilopoulos/ansible/WinSCP-5.9.5-Setup.exe
+        dest: c:\Scripts\WinSCP-5.9.5-Setup.exe

@@ -1,0 +1,268 @@
+---
+- hosts: all
+  gather_facts: True
+  tasks:
+     - name: Install C4B and Repos
+       win_shell: |
+         $downloader = New-Object -TypeName System.Net.WebClient
+         Invoke-Expression ($downloader.DownloadString('https://choco.example.com:8443/repository/choco-install/ClientSetup.ps1'))
+
+         choco source remove -n=SMI
+
+         choco source add --name=Restricted --source=https://choco.example.com:8443/repository/Restricted/ --admin-only
+
+         choco sync
+
+- name: License Server Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add AWR License variable
+       win_shell: |
+         [Environment]::SetEnvironmentVariable("AWRD_LICENSE_FILE", "27007@hyperlynxlsvm.example.com", "Machine")
+       ignore_errors: yes
+       when: baseline == "RF"
+
+     - name: Add OrCad License variable
+       win_shell: |
+         [Environment]::SetEnvironmentVariable("CDS_LIC_FILE", "5280@orcadlsvm.example.com", "Machine")
+       ignore_errors: yes
+       when: baseline == "EE" or  baseline == "RF"
+
+     - name: Add PADS License variable
+       win_shell: |
+         [Environment]::SetEnvironmentVariable("MGLS_LICENSE_FILE", "1702@hyperlynxlsvm.example.com", "Machine")
+       ignore_errors: yes
+       when: baseline == "RF"
+
+     - name: Add Xilinx License variable
+       win_shell: |
+         [Environment]::SetEnvironmentVariable("XILINXD_LICENSE_FILE", "2100@hyperlynxlsvm.example.com", "Machine")
+       ignore_errors: yes
+       when: baseline == "FW"
+
+- name: Base Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install or update packages for the standard baseline
+       win_chocolatey:
+         name:
+         - smiscripts
+         - virt-viewer
+         - googlechrome
+         - firefox
+         - notepadplusplus
+         - libreoffice-fresh
+         - putty
+         - vlc
+         - 7zip
+         - tortoisesvn
+         - winscp
+         - foxitreader
+         - drawio
+         - freecad
+         - thunderbird
+         - sophos
+         state: latest
+       ignore_errors: yes
+
+- name: EE Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add EE repositories
+       win_shell: |
+         choco source add --name=Eng-All --source=https://choco.example.com:8443/repository/Eng-All/ --allow-self-service
+         choco source add --name=Eng-EE --source=https://choco.example.com:8443/repository/EE/ --allow-self-service
+       when: baseline == "EE"
+     - name: Install or update packages for the EE baseline and add Repos
+       win_chocolatey:
+         name:
+         - kicad
+         - edrawings-viewer
+         - ltspice
+         - ace3000
+         - altium-designer
+         state: latest
+       ignore_errors: yes
+       when: baseline == "EE"
+
+- name: RF Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add RF repositories 
+       win_shell: |
+         choco source add --name=Eng-All --source=https://choco.example.com:8443/repository/Eng-All/ --allow-self-service
+         choco source add --name=Eng-RF --source=https://choco.example.com:8443/repository/RF/ --allow-self-service
+       when: baseline == "RF"
+     - name: Install or update packages for the RF baseline and add Repos
+       win_chocolatey:
+         name:
+         - kicad
+         - octave
+         - edrawings-viewer
+         - ltspice
+         - ace3000
+         - awr
+         - altium-designer
+         state: latest
+       ignore_errors: yes
+       when: baseline == "RF"
+
+- name: ME Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add ME repositories
+       win_shell: |
+         choco source add --name=Eng-All --source=https://choco.example.com:8443/repository/Eng-All/ --allow-self-service
+         choco source add --name=Eng-ME --source=https://choco.example.com:8443/repository/ME/ --allow-self-service
+       when: baseline == "ME"
+     - name: Install or update packages for the ME baseline and add Repos
+       win_chocolatey:
+         name:
+         - ace3000
+         - kicad
+         state: latest
+       ignore_errors: yes
+       when: baseline == "ME"
+
+- name: FW Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add FW repositories
+       win_shell: |
+         choco source add --name=Eng-All --source=https://choco.example.com:8443/repository/Eng-All/ --allow-self-service
+         choco source add --name=Eng-FW --source=https://choco.example.com:8443/repository/FW/ --allow-self-service
+       when: baseline == "FW"
+     - name: Install or update packages for the FW baseline and add Repos
+       win_chocolatey:
+         name:
+         - winmerge
+         - vim
+         - python
+         - ace3000
+         - sophos
+         - agentransack
+         - altium-designer
+         state: latest
+         state: latest
+       ignore_errors: yes
+       when: baseline == "FW"
+
+- name: Optical Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Add Optical repositories
+       win_shell: |
+         choco source add --name=Eng-All --source=https://choco.example.com:8443/repository/Eng-All/ --allow-self-service
+         choco source add --name=Optical --source=https://choco.example.com:8443/repository/Optical/ --allow-self-service
+       when: baseline == "Optical"
+     - name: Install or update packages for the Optical baseline and add Repos
+       win_chocolatey:
+         name:
+         - ace3000
+         state: latest
+       ignore_errors: yes
+       when: baseline == "Optical"
+
+- name: Admin Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install or update packages for the Admin baseline
+       win_chocolatey:
+         name:
+         - scansnapmanager
+         state: latest
+       ignore_errors: yes
+       when: baseline == "Admin"
+
+- name: MFG Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install or update packages for the MFG baseline
+       win_chocolatey:
+         name:
+         - scansnapmanager
+         state: latest
+       ignore_errors: yes
+       when: baseline == "MFG"
+
+- name: QA Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install or update packages for the QA baseline
+       win_chocolatey:
+         name:
+         - scansnapmanager
+         state: latest
+       ignore_errors: yes
+       when: baseline == "QA"
+
+- name: Office Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install Office with selected apps
+       win_shell: |
+         choco feature enable -n=useRememberedArgumentsForUpgrades
+         choco install office365business -params '"/exclude:""Access Groove Lync OneDrive OneNote Outlook Publisher"""' -y
+       when: office == "True"
+
+- name: Office Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install Office with selected apps
+       win_shell: |
+         choco feature enable -n=useRememberedArgumentsForUpgrades
+         choco install office365business -params '"/exclude:""Groove Lync OneDrive OneNote Outlook"""' -y
+       when: office == "Marketing" or office == "Admin"
+
+- name: Visio Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install Visio
+       win_shell: |
+         choco install office365business -params  '"/productid:VisioProRetail"' -fy  
+       when: baseline == "EE"
+
+- name: Project Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install MS Project
+       win_shell: |
+         choco feature enable -n=useRememberedArgumentsForUpgrades
+         choco install office365business -params  '"/productid: ProjectProRetail"' -fy
+       when: baseline == "PM" or baseline == "EXEC" or baseline == "MKTG"
+
+- name: Zabbix Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Install Zabbix Agent
+       win_shell: |
+         choco feature enable -n=useRememberedArgumentsForUpgrades
+         choco install zabbix-agent.install -params '"/INSTALLFOLDER:C:\Zabbix /LOGFILE:C:\zabbix_agentd.log /SERVER:10.0.0.102 /SERVERACTIVE:10.0.0.102"' -fy
+         C:\Zabbix\zabbix_agentd.exe --stop
+         ((Get-Content -path C:\Zabbix\zabbix_agentd.conf -Raw) -replace '# HostMetadataItem=','HostMetadataItem=system.uname') | Set-Content -Path C:\Zabbix\zabbix_agentd.conf
+       when: zabbix == "True"
+     - name: Start Zabbix
+       win_shell: C:\Zabbix\zabbix_agentd.exe --start
+       when: zabbix == "True"
+
+- name: Update Play
+  hosts: all
+  gather_facts: False
+  tasks:
+     - name: Do a final check for choco package updates
+       win_shell: choco upgrade all -y

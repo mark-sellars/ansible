@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+     - name: Open Firewall rule in
+       win_firewall_rule:
+          name: "{{ firewall_rule_in_name }} AWX In"
+          localport: "{{ firewall_in_port }}"
+          action: "{{ firewall_in_action }}"
+          direction: in
+          protocol: "{{ firewall_in_protocol }}"
+          state: present
+          enabled: yes
+       become_method: runas

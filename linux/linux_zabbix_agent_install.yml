@@ -1,0 +1,97 @@
+---
+- hosts: all
+  tasks:
+
+
+    - name: Remove zabbix agent if present
+      block:
+        - yum:
+            name: zabbix-agent
+            state: absent
+      rescue:
+        - command: yum clean all
+
+
+    - name: Remove prior zabbix etc folders
+      file:
+        path: /etc/zabbix
+        state: absent
+      file:
+        path: /etc/Zabbix
+        state: absent
+
+
+    - name: Remove prior zabbix yum.repos.d
+      file:
+        path: /etc/yum.repos.d/zabbix.repo
+        state: absent
+      file:
+        path: /etc/yum.repos.d/Zabbix.repo
+        state: absent
+
+
+    - name: clean yum
+      command: yum clean all
+
+
+    - name: Checkout Zabbix configuration file from SVN
+      subversion:
+        repo: https://itop.spacemicro.com/svn/zabbix/configs/linux
+        username: "{{ svn_username }}"
+        password: "{{ svn_password }}"
+        dest: /tmp/zabbix
+
+
+    - name: Add Zabbix Repo
+      yum_repository:
+        name: zabbix
+        description: Zabbix enterprise monitoring
+        baseurl: https://repo.zabbix.com/zabbix/5.2/rhel/7/x86_64
+        enabled: yes
+        state: present
+        gpgcheck: no
+        repo_gpgcheck: no
+
+
+    - name: Open firewalld port 10050 for zabbix agent
+      block:
+        - firewalld:
+            port: 10050/tcp
+            permanent: true
+            state: enabled
+            immediate: yes
+      rescue:
+        - service: name=firewalld state=started enabled=yes
+        - firewalld:
+            port: 10050/tcp
+            permanent: true
+            state: enabled
+            immediate: yes
+
+
+    - name: install zabbix-agent
+      yum:
+        name: zabbix-agent
+        state: latest
+
+
+    - name: Copy file from checked out zabbix svn folder into correct /etc/zabbix location
+      copy:
+        src: /tmp/zabbix/zabbix_agentd.conf
+        dest: /etc/zabbix/zabbix_agentd.conf
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+        remote_src: yes
+
+
+    - name: Enable zabbix-agent
+      systemd:
+        enabled: yes
+        name: zabbix-agent
+
+
+    - name: Start zabbix-agent
+      systemd:
+        state: started
+        name: zabbix-agent

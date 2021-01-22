@@ -1,0 +1,9 @@
+- name: Run Batch Script
+  hosts: Management
+  gather_facts: false
+  tasks:
+    - name: Run Batch Script
+      win_shell: winrm set winrm/config @{MaxEnvelopeSizekb="1024"}
+      args:
+        executable: cmd
+#      script: /etc/ansible/library/batchrem.bat

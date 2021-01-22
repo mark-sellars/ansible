@@ -1,0 +1,7 @@
+- name: Start a systemd service
+  hosts: all
+  gather_facts: False
+  tasks:
+    - systemd:
+        name: "{{service_name}}"
+        state: "restarted"

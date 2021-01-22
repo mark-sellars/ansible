@@ -1,0 +1,30 @@
+- name: copy custom facts
+  hosts: windows
+  tasks:
+    - name: copy
+      win_copy:
+        src: remoteprog.ps1
+        dest: "C:\\Scripts\\facts.ps1"
+
+    - name: gather extra facts
+      setup:
+        fact_path: "C:\\Scripts\\facts.ps1"
+    - name: Set intermediate fact
+      set_fact:
+        vars_hack: "{{ hostvars[inventory_hostname] }}"
+    - name: remove temp folder
+      file:
+        path: "/etc/ansible/temp/ansiblecmdb"
+        state: absent
+      failed_when: false
+      delegate_to: localhost
+
+    - name: create temp folder
+      file:
+        path: "/etc/ansible/temp/ansiblecmdb"
+        state: directory
+      delegate_to: localhost
+
+    - name: Dump all vars
+      action: template src=/etc/ansible/templates/dumpall.j2 dest="/etc/ansible/temp/ansiblecmdb/{{ inventory_hostname }}.json"
+      delegate_to: localhost

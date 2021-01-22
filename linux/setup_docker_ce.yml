@@ -1,0 +1,53 @@
+---
+- name: setup docker-ce
+  hosts: all
+  gather_facts: False
+  tasks:
+  - name: Remove any old references to deprecated Docker
+    yum:
+      name:
+        - docker
+        - docker-client
+        - docker-client-latest
+        - docker-common
+        - docker-latest
+        - docker-latest-logrotate
+        - docker-logrotate
+        - docker-selinux
+        - docker-engine-selinux
+        - docker-engine
+      state: absent
+    become: yes
+
+  - name: install packages needed for Docker-ce
+    yum:
+      name:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+      state: present
+    become: yes
+
+  - name: add the docker-ce repository
+    yum_repository:
+        name: docker-ce
+        description: docker-ce repository
+        baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: https://download.docker.com/linux/centos/gpg
+    become: yes
+
+  - name: install docker-ce
+    yum:
+      name:
+        - docker-ce
+      state: present
+    become: yes
+
+  - name: enable and start docker-ce
+    systemd:
+      name: docker
+      enabled: yes
+      state: started
+    become: yes

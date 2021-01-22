@@ -1,0 +1,6 @@
+- name: Check Installed Packages
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Check Installed Packages
+      command: "rpm -qa"

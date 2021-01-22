@@ -1,0 +1,8 @@
+---
+- name: Fix tortoise
+  hosts: all
+  tasks:
+   - name: reinstall tortoise
+     win_chocolatey:
+       name: tortoisesvn
+       state: reinstalled

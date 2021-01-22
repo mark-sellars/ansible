@@ -1,0 +1,7 @@
+- name: Enable a systemd service
+  hosts: all
+  gather_facts: False
+  tasks:
+    - systemd:
+        enabled: "yes"
+        name: "{{service_name}}"

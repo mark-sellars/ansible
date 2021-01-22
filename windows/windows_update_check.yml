@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+    # Check if there are missing updates
+    - name: Check for missing updates.
+      win_updates:
+        state: searched
+        category_names:
+          - CriticalUpdates
+          - SecurityUpdates
+          - UpdateRollups
+          - DefinitionUpdates
+          - Tools
+      register: update_count
+    - name: List missing updates
+      debug: var=update_count

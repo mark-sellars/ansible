@@ -1,0 +1,7 @@
+- name: Update a specific yum package
+  hosts: all
+  gather_facts: False
+  tasks:
+    - yum:
+        name: "{{package_name}}"
+        state: latest

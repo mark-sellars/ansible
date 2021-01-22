@@ -1,0 +1,23 @@
+---
+- name: setup docker-compose
+  hosts: all
+  gather_facts: False
+  tasks:
+  - name: install python pip
+    yum:
+      name:
+        - python-pip
+      state: present
+    become: yes
+
+  - name: upgrade pip
+    shell: pip install -U pip
+    become: yes
+
+  - name: install docker-compose
+    shell: pip install docker-compose
+    become: yes
+
+  - name: add user to the docker group
+    shell: usermod -aG docker {{ user_name }}
+    become: yes

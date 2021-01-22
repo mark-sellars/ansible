@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: False
+  tasks:
+     - name: Reboot Windows
+       win_reboot:
+         reboot_timeout: 1000
+         post_reboot_delay: 500

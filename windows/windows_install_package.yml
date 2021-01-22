@@ -1,0 +1,8 @@
+---
+- name: Ensure Chocolatey installed from internal repo
+  hosts: all
+  tasks:
+   - name: choco 
+     win_chocolatey:
+       name: octave
+       state: latest

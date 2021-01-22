@@ -1,0 +1,11 @@
+- name: Copy a file to a location
+  hosts: all
+  gather_facts: False
+  tasks:
+    - copy:
+        src: "{{src_path}}"
+        dest: "{{dst_path}}"
+        owner: "root"
+        group: "root"
+        mode: "u=rw,g=r,o=r"
+        force: "yes"
